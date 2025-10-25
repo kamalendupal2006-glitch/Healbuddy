@@ -1,0 +1,33 @@
+     const express = require('express');
+     const multer = require('multer');
+     const axios = require('axios'); // For API calls to AI services
+     const app = express();
+     // ... existing setup ...
+
+     const upload = multer({ dest: 'uploads/' });
+
+     // Mock AI analysis function (replace with real API, e.g., Clarifai or custom model)
+     async function analyzeSkin(symptoms, imagePath) {
+         // Text analysis: Simple keyword matching (use NLP library like natural for better)
+         let disease = 'Unknown';
+         if (symptoms.includes('red rash')) disease = 'Eczema';
+         if (symptoms.includes('scaly patches')) disease = 'Psoriasis';
+
+         // Image analysis: Call a vision API (e.g., Google Vision or TensorFlow)
+         // For demo, simulate: Check for cancer indicators
+         const cancerRisk = Math.random() > 0.8; // Replace with real model prediction
+
+         const info = `Based on your input, this may be ${disease}. Causes: Dry skin. Remedies: Moisturize daily. Consult a doctor for confirmation.`;
+         return { info, cancerRisk };
+     }
+
+     app.post('/analyze-skin', upload.single('image'), async (req, res) => {
+         const { symptoms } = req.body;
+         const imagePath = req.file ? req.file.path : null;
+         
+         const result = await analyzeSkin(symptoms, imagePath);
+         res.json(result);
+     });
+
+     // ... existing routes ...
+     
